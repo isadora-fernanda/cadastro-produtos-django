@@ -1,0 +1,80 @@
+{% extends 'produtos/base.html' %}
+
+
+{% block title %}
+    {{ titulo }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="form-container">
+
+    <h1>
+        {{ titulo }}
+    </h1>
+
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+    >
+
+        {% csrf_token %}
+
+
+        {% for field in form %}
+
+            <div class="form-group">
+
+                {{ field.label_tag }}
+
+                {{ field }}
+
+
+                {% if field.help_text %}
+
+                    <small>
+                        {{ field.help_text }}
+                    </small>
+
+                {% endif %}
+
+
+                {% for error in field.errors %}
+
+                    <div class="erro">
+                        {{ error }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endfor %}
+
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="btn btn-success"
+            >
+                ✓ Salvar Produto
+            </button>
+
+
+            <a
+                href="{% url 'lista_produtos' %}"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

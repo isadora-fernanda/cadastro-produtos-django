@@ -1,0 +1,105 @@
+{% extends 'produtos/base.html' %}
+
+
+{% block title %}
+    {{ produto.nome }}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="detail-card">
+
+
+    <div>
+
+        {% if produto.imagem %}
+
+            <img
+                src="{{ produto.imagem.url }}"
+                alt="{{ produto.nome }}"
+                class="detail-image"
+            >
+
+        {% else %}
+
+            <div class="detail-no-image">
+                Sem imagem
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="detail-info">
+
+        <h1>
+            {{ produto.nome }}
+        </h1>
+
+
+        <p class="detail-description">
+
+            {% if produto.descricao %}
+
+                {{ produto.descricao }}
+
+            {% else %}
+
+                Nenhuma descrição cadastrada.
+
+            {% endif %}
+
+        </p>
+
+
+        <div class="detail-price">
+
+            R$ {{ produto.preco }}
+
+        </div>
+
+
+        <div class="detail-stock">
+
+            <strong>Estoque:</strong>
+
+            {{ produto.estoque }}
+            unidade(s)
+
+        </div>
+
+
+        <div class="card-actions">
+
+            <a
+                href="{% url 'editar_produto' produto.id %}"
+                class="btn btn-warning"
+            >
+                ✎ Editar
+            </a>
+
+
+            <a
+                href="{% url 'excluir_produto' produto.id %}"
+                class="btn btn-danger"
+            >
+                🗑 Excluir
+            </a>
+
+
+            <a
+                href="{% url 'lista_produtos' %}"
+                class="btn btn-secondary"
+            >
+                ← Voltar
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

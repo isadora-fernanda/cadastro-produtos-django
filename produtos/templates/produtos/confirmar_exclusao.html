@@ -1,0 +1,67 @@
+{% extends 'produtos/base.html' %}
+
+
+{% block title %}
+    Excluir Produto
+{% endblock %}
+
+
+{% block content %}
+
+<div class="delete-card">
+
+
+    <div class="delete-icon">
+        !
+    </div>
+
+
+    <h1>
+        Excluir produto?
+    </h1>
+
+
+    <p>
+
+        Você está prestes a excluir o produto
+
+        <strong>
+            {{ produto.nome }}
+        </strong>.
+
+        <br><br>
+
+        Essa ação não poderá ser desfeita.
+
+    </p>
+
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+
+        <div class="delete-actions">
+
+            <button
+                type="submit"
+                class="btn btn-danger"
+            >
+                🗑 Sim, excluir
+            </button>
+
+
+            <a
+                href="{% url 'lista_produtos' %}"
+                class="btn btn-secondary"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'produtos/base.html' %}
+
+{% block title %}
+    Produtos
+{% endblock %}
+
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Produtos</h1>
+
+        <p>
+            Gerencie os produtos da sua loja
+        </p>
+
+    </div>
+
+
+    <a
+        href="{% url 'cadastrar_produto' %}"
+        class="btn btn-success"
+    >
+        + Novo Produto
+    </a>
+
+</div>
+
+
+<div class="search-box">
+
+    <form
+        method="GET"
+        class="search-form"
+    >
+
+        <input
+            type="text"
+            name="busca"
+            value="{{ busca }}"
+            placeholder="🔍 Pesquisar produto pelo nome..."
+            class="form-control"
+        >
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+            Pesquisar
+        </button>
+
+    </form>
+
+</div>
+
+
+{% if produtos %}
+
+    <div class="product-grid">
+
+        {% for produto in produtos %}
+
+            <div class="product-card">
+
+
+                {% if produto.imagem %}
+
+                    <img
+                        src="{{ produto.imagem.url }}"
+                        alt="{{ produto.nome }}"
+                        class="product-image"
+                    >
+
+                {% else %}
+
+                    <div class="no-image">
+                        Sem imagem
+                    </div>
+
+                {% endif %}
+
+
+                <div class="product-content">
+
+                    <h2>
+                        {{ produto.nome }}
+                    </h2>
+
+
+                    <p class="product-description">
+
+                        {% if produto.descricao %}
+
+                            {{ produto.descricao|truncatechars:100 }}
+
+                        {% else %}
+
+                            Nenhuma descrição cadastrada.
+
+                        {% endif %}
+
+                    </p>
+
+
+                    <div class="product-price">
+
+                        R$ {{ produto.preco }}
+
+                    </div>
+
+
+                    <div class="product-stock">
+
+                        Estoque:
+                        <strong>
+                            {{ produto.estoque }}
+                        </strong>
+                        unidade(s)
+
+                    </div>
+
+
+                    <div class="card-actions">
+
+                        <a
+                            href="{% url 'detalhe_produto' produto.id %}"
+                            class="btn btn-primary"
+                        >
+                            Ver
+                        </a>
+
+
+                        <a
+                            href="{% url 'editar_produto' produto.id %}"
+                            class="btn btn-warning"
+                        >
+                            Editar
+                        </a>
+
+
+                        <a
+                            href="{% url 'excluir_produto' produto.id %}"
+                            class="btn btn-danger"
+                        >
+                            Excluir
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+
+{% else %}
+
+    <div class="empty-state">
+
+        <h2>
+            {% if busca %}
+                Nenhum produto encontrado
+            {% else %}
+                Nenhum produto cadastrado
+            {% endif %}
+        </h2>
+
+
+        <p>
+
+            {% if busca %}
+
+                Não encontramos produtos para
+                "<strong>{{ busca }}</strong>".
+
+            {% else %}
+
+                Comece cadastrando seu primeiro produto.
+
+            {% endif %}
+
+        </p>
+
+    </div>
+
+{% endif %}
+
+
+{% endblock %}
