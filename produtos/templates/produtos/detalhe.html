@@ -1,105 +1,32 @@
 {% extends 'produtos/base.html' %}
 
-
-{% block title %}
-    {{ produto.nome }}
-{% endblock %}
-
+{% block title %}{{ produto.nome }}{% endblock %}
 
 {% block content %}
+<p class="voltar"><a href="{% url 'lista_produtos' %}">&larr; Produtos</a></p>
 
-<div class="detail-card">
+<article class="detalhe">
+  {% if produto.imagem %}
+    <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}">
+  {% endif %}
 
+  <div>
+    <h1>{{ produto.nome }}</h1>
+    {% if produto.descricao %}
+      <p>{{ produto.descricao|linebreaksbr }}</p>
+    {% endif %}
 
-    <div>
+    <dl>
+      <dt>Preço</dt>
+      <dd>R$ {{ produto.preco|floatformat:2 }}</dd>
+      <dt>Estoque</dt>
+      <dd>{{ produto.estoque }} unidade{{ produto.estoque|pluralize }}</dd>
+    </dl>
 
-        {% if produto.imagem %}
-
-            <img
-                src="{{ produto.imagem.url }}"
-                alt="{{ produto.nome }}"
-                class="detail-image"
-            >
-
-        {% else %}
-
-            <div class="detail-no-image">
-                Sem imagem
-            </div>
-
-        {% endif %}
-
-    </div>
-
-
-    <div class="detail-info">
-
-        <h1>
-            {{ produto.nome }}
-        </h1>
-
-
-        <p class="detail-description">
-
-            {% if produto.descricao %}
-
-                {{ produto.descricao }}
-
-            {% else %}
-
-                Nenhuma descrição cadastrada.
-
-            {% endif %}
-
-        </p>
-
-
-        <div class="detail-price">
-
-            R$ {{ produto.preco }}
-
-        </div>
-
-
-        <div class="detail-stock">
-
-            <strong>Estoque:</strong>
-
-            {{ produto.estoque }}
-            unidade(s)
-
-        </div>
-
-
-        <div class="card-actions">
-
-            <a
-                href="{% url 'editar_produto' produto.id %}"
-                class="btn btn-warning"
-            >
-                ✎ Editar
-            </a>
-
-
-            <a
-                href="{% url 'excluir_produto' produto.id %}"
-                class="btn btn-danger"
-            >
-                🗑 Excluir
-            </a>
-
-
-            <a
-                href="{% url 'lista_produtos' %}"
-                class="btn btn-secondary"
-            >
-                ← Voltar
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-
+    <p class="acoes">
+      <a href="{% url 'editar_produto' produto.id %}" class="botao">Editar</a>
+      <a href="{% url 'excluir_produto' produto.id %}" class="perigo">Excluir</a>
+    </p>
+  </div>
+</article>
 {% endblock %}

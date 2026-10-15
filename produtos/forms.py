@@ -1,63 +1,21 @@
 from django import forms
+
 from .models import Produto
 
 
 class ProdutoForm(forms.ModelForm):
-
     class Meta:
         model = Produto
-
-        fields = [
-            'nome',
-            'descricao',
-            'preco',
-            'estoque',
-            'imagem'
-        ]
-
+        fields = ['nome', 'descricao', 'preco', 'estoque', 'imagem']
         labels = {
-            'nome': 'Nome do produto',
+            'nome': 'Nome',
             'descricao': 'Descrição',
-            'preco': 'Preço',
+            'preco': 'Preço (R$)',
             'estoque': 'Estoque',
-            'imagem': 'Imagem do produto',
+            'imagem': 'Imagem',
         }
-
         widgets = {
-            'nome': forms.TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Digite o nome do produto'
-                }
-            ),
-
-            'descricao': forms.Textarea(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Digite uma descrição para o produto',
-                    'rows': 5
-                }
-            ),
-
-            'preco': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': '0,00',
-                    'step': '0.01'
-                }
-            ),
-
-            'estoque': forms.NumberInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Quantidade em estoque',
-                    'min': '0'
-                }
-            ),
-
-            'imagem': forms.ClearableFileInput(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
+            'descricao': forms.Textarea(attrs={'rows': 4}),
+            'preco': forms.NumberInput(attrs={'step': '0.01', 'min': '0'}),
+            'estoque': forms.NumberInput(attrs={'min': '0'}),
         }

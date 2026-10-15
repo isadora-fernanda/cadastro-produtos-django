@@ -1,88 +1,23 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        {% block title %}
-            Produtos
-        {% endblock %}
-    </title>
-
-    <!-- Fonte moderna -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
-
-    <link
-        rel="stylesheet"
-        href="{% static 'produtos/css/style.css' %}"
-    >
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Produtos{% endblock %} · Cadastro de Produtos</title>
+  <link rel="stylesheet" href="{% static 'produtos/css/style.css' %}">
 </head>
-
 <body>
+  <header class="topo">
+    <a href="{% url 'lista_produtos' %}">Cadastro de Produtos</a>
+  </header>
 
-    <nav class="navbar">
+  <main>
+    {% for message in messages %}
+      <p class="aviso">{{ message }}</p>
+    {% endfor %}
 
-        <a
-            href="{% url 'lista_produtos' %}"
-            class="logo"
-        >
-            Loja<span>Produtos</span>
-        </a>
-
-    </nav>
-
-
-    <main class="container">
-
-        {% if messages %}
-
-            {% for message in messages %}
-
-                <div class="alert">
-                    {{ message }}
-                </div>
-
-            {% endfor %}
-
-        {% endif %}
-
-
-        {% block content %}
-        {% endblock %}
-
-    </main>
-
-
-    <footer class="footer">
-
-        Sistema de Cadastro de Produtos
-
-    </footer>
-
+    {% block content %}{% endblock %}
+  </main>
 </body>
-
 </html>

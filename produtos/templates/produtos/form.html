@@ -1,80 +1,29 @@
 {% extends 'produtos/base.html' %}
 
-
-{% block title %}
-    {{ titulo }}
-{% endblock %}
-
+{% block title %}{{ titulo }}{% endblock %}
 
 {% block content %}
+<p class="voltar"><a href="{% url 'lista_produtos' %}">&larr; Produtos</a></p>
 
-<div class="form-container">
+<h1>{{ titulo }}</h1>
 
-    <h1>
-        {{ titulo }}
-    </h1>
+<form method="post" enctype="multipart/form-data" class="formulario">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
 
+  {% for campo in form %}
+    <div class="campo">
+      {{ campo.label_tag }}
+      {{ campo }}
+      {% for erro in campo.errors %}
+        <span class="erro">{{ erro }}</span>
+      {% endfor %}
+    </div>
+  {% endfor %}
 
-    <form
-        method="POST"
-        enctype="multipart/form-data"
-    >
-
-        {% csrf_token %}
-
-
-        {% for field in form %}
-
-            <div class="form-group">
-
-                {{ field.label_tag }}
-
-                {{ field }}
-
-
-                {% if field.help_text %}
-
-                    <small>
-                        {{ field.help_text }}
-                    </small>
-
-                {% endif %}
-
-
-                {% for error in field.errors %}
-
-                    <div class="erro">
-                        {{ error }}
-                    </div>
-
-                {% endfor %}
-
-            </div>
-
-        {% endfor %}
-
-
-        <div class="form-actions">
-
-            <button
-                type="submit"
-                class="btn btn-success"
-            >
-                ✓ Salvar Produto
-            </button>
-
-
-            <a
-                href="{% url 'lista_produtos' %}"
-                class="btn btn-secondary"
-            >
-                Cancelar
-            </a>
-
-        </div>
-
-    </form>
-
-</div>
-
+  <p class="acoes">
+    <button type="submit" class="botao">Salvar</button>
+    <a href="{% url 'lista_produtos' %}">Cancelar</a>
+  </p>
+</form>
 {% endblock %}

@@ -1,49 +1,58 @@
 # Cadastro de Produtos com Django
 
-Sistema web em **Python** e **Django** para cadastrar, listar, editar e excluir produtos de uma loja (CRUD completo), com upload de imagem, busca por nome e página de confirmação antes de excluir.
+Sistema web em **Python** e **Django** para cadastrar, listar, editar e excluir os produtos de uma loja, com imagem de cada produto. Foi um trabalho individual do curso **Python para Inteligência Artificial** do **Entra21** (Blusoft e ACATE), em 2026.
 
-> **English:** Django web app for managing a store's products (full CRUD) with image upload, name search and a delete confirmation page. Built with Python, Django, SQLite and Pillow, with automated tests for every operation.
+> **English:** Django CRUD app for a store's products (Entra21 Python for AI course, 2026), with image upload, name search, pagination and a delete confirmation page. Prices and stock are validated, old image files are removed when a product is edited or deleted, and every operation is covered by automated tests.
 
-![Lista de produtos](docs/lista.png)
+<img src="docs/lista.png" alt="Lista de produtos" width="700">
 
-*Tela inicial com produtos de demonstração. As imagens foram geradas só para esta captura.*
+*Lista com produtos de demonstração. As imagens foram desenhadas só para esta captura.*
 
-## Funcionalidades
+## O que o enunciado pedia
 
-- **Listagem** de todos os produtos em cartões, em ordem alfabética, com imagem, preço e estoque.
-- **Busca por nome**, que ignora maiúsculas e minúsculas.
-- **Página de detalhes** de cada produto.
-- **Cadastro e edição** com o mesmo formulário (`ModelForm`), validação dos campos e upload de imagem.
-- **Exclusão com confirmação**: o produto só é apagado depois que o usuário confirma.
-- **Mensagens de retorno** ("Produto cadastrado com sucesso", por exemplo) depois de cada ação.
-- **Painel administrativo** do Django com o modelo registrado.
+| Requisito | Como foi atendido |
+|---|---|
+| Projeto Django com a aplicação `produtos` | Projeto `config` e app `produtos`, com banco SQLite |
+| Modelo `Produto` com nome, descrição, preço, estoque e imagem | `produtos/models.py` |
+| Listar, cadastrar, visualizar, editar e excluir | Uma view para cada operação em `produtos/views.py` |
+| Nome obrigatório, preço decimal, estoque inteiro e imagem opcional | `CharField`, `DecimalField`, `PositiveIntegerField` e `ImageField(blank=True)` |
+| Imagem exibida na listagem e nos detalhes | Miniatura na tabela e imagem grande na página do produto |
+| Formulário com `multipart/form-data` usando Django Forms | `ModelForm` em `produtos/forms.py`, usado no cadastro e na edição |
+| `MEDIA_URL` e `MEDIA_ROOT` configurados | Imagens salvas em `media/produtos/` e servidas em `/media/` |
+| Voltar para a lista depois de cadastrar, editar ou excluir | Redirecionamento para a lista, com uma mensagem sobre o que foi feito |
+| Desafio extra: pesquisa pelo nome | Campo de busca na lista, que ignora maiúsculas e minúsculas |
+| Segundo desafio: confirmação antes de excluir | Página de confirmação, e o produto só é apagado depois de confirmar |
+
+Além do enunciado, a lista mostra 10 produtos por página e o projeto tem o painel administrativo do Django.
 
 ## Telas
 
-| Detalhes | Cadastro | Confirmação de exclusão |
+| Detalhes | Cadastro | Exclusão |
 |---|---|---|
 | ![Detalhes](docs/detalhe.png) | ![Cadastro](docs/cadastro.png) | ![Exclusão](docs/exclusao.png) |
 
 ## Modelo
 
-| Campo | Tipo | Observação |
+| Campo | Tipo | Regra |
 |---|---|---|
 | `nome` | `CharField(200)` | Obrigatório |
 | `descricao` | `TextField` | Opcional |
-| `preco` | `DecimalField(10, 2)` | Obrigatório |
-| `estoque` | `IntegerField` | Obrigatório |
-| `imagem` | `ImageField` | Opcional, salva em `media/produtos/` |
+| `preco` | `DecimalField(10, 2)` | Obrigatório, não aceita valor negativo |
+| `estoque` | `PositiveIntegerField` | Obrigatório, só números inteiros a partir de 0 |
+| `imagem` | `ImageField` | Opcional |
+
+Quando a imagem de um produto é trocada, ou o produto é excluído, o arquivo antigo também é apagado da pasta `media/`. Assim não sobram imagens sem dono.
 
 ## Rotas
 
-| URL | View | Ação |
-|---|---|---|
-| `/` | `lista_produtos` | Lista e busca (`?busca=`) |
-| `/produto/<id>/` | `detalhe_produto` | Detalhes |
-| `/cadastrar/` | `cadastrar_produto` | Novo produto |
-| `/editar/<id>/` | `editar_produto` | Edição |
-| `/excluir/<id>/` | `excluir_produto` | Confirmação (GET) e exclusão (POST) |
-| `/admin/` | Admin do Django | Painel administrativo |
+| URL | O que faz |
+|---|---|
+| `/` | Lista, com busca (`?busca=`) e páginas (`?pagina=`) |
+| `/produto/<id>/` | Detalhes de um produto |
+| `/cadastrar/` | Novo produto |
+| `/editar/<id>/` | Edição |
+| `/excluir/<id>/` | Pede confirmação (GET) e exclui (POST) |
+| `/admin/` | Painel administrativo |
 
 ## Como rodar
 
@@ -60,7 +69,7 @@ python manage.py runserver
 
 Depois é só abrir http://127.0.0.1:8000/.
 
-A `SECRET_KEY` e o modo de depuração podem ser definidos pelas variáveis de ambiente `DJANGO_SECRET_KEY` e `DJANGO_DEBUG`. Sem elas, o projeto usa uma chave de desenvolvimento e roda com `DEBUG` ligado, o que serve só para uso local.
+A `SECRET_KEY` e o modo de depuração podem ser definidos pelas variáveis de ambiente `DJANGO_SECRET_KEY` e `DJANGO_DEBUG`. Sem elas, o projeto usa uma chave de desenvolvimento e roda com `DEBUG` ligado, o que só serve para uso local.
 
 ## Testes
 
@@ -68,14 +77,14 @@ A `SECRET_KEY` e o modo de depuração podem ser definidos pelas variáveis de a
 python manage.py test
 ```
 
-São 7 testes cobrindo listagem, busca, cadastro com imagem, validação de campos obrigatórios e do estoque, edição e a exclusão em duas etapas.
+São 10 testes: listagem com o preço no formato brasileiro, busca, paginação, cadastro com imagem, nome obrigatório, estoque inteiro, preço e estoque negativos, edição, troca de imagem apagando o arquivo antigo e exclusão em duas etapas apagando a imagem.
 
 ## Estrutura
 
 ```
 cadastro-produtos-django/
 ├── config/            # configurações e URLs do projeto
-├── produtos/          # app com modelo, formulário, views, templates, CSS e testes
+├── produtos/          # modelo, formulário, views, templates, CSS e testes
 ├── docs/              # capturas de tela
 ├── manage.py
 └── requirements.txt
@@ -83,11 +92,11 @@ cadastro-produtos-django/
 
 ## O que eu faria diferente hoje
 
-- **Estoque negativo.** `IntegerField` aceita valores como -5. Eu usaria `PositiveIntegerField`, e para o preço um `MinValueValidator`.
-- **Arquivos de imagem órfãos.** Ao trocar a imagem ou excluir um produto, o arquivo antigo continua na pasta `media/`. Eu apagaria o arquivo junto com o registro.
-- **Paginação.** Com muitos produtos, a lista ficaria longa. O `Paginator` do Django resolveria isso.
-- **Views baseadas em classe.** As `ListView`, `CreateView`, `UpdateView` e `DeleteView` do Django fariam o mesmo CRUD com menos código.
-- **Login.** Hoje qualquer pessoa com acesso ao site pode cadastrar e excluir. Eu exigiria login nas telas de alteração.
+Revisei o projeto depois da entrega. Troquei o estoque para `PositiveIntegerField` e coloquei um valor mínimo no preço, passei a apagar as imagens antigas, acrescentei a paginação e os testes e refiz o visual das telas de um jeito mais simples. Ainda daria para melhorar:
+
+- **Login.** Hoje qualquer pessoa com acesso ao site pode cadastrar e excluir. Eu exigiria login nas telas que alteram dados.
+- **Views baseadas em classe.** `ListView`, `CreateView`, `UpdateView` e `DeleteView` fariam o mesmo CRUD com menos código.
+- **Tamanho das imagens.** O upload aceita qualquer tamanho. Eu limitaria o tamanho do arquivo e reduziria a imagem ao salvar.
 
 ---
 
